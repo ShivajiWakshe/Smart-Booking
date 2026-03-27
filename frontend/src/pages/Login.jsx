@@ -1,35 +1,43 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api"; // ✅ import api
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      setLoading(true);
+
+      // ✅ API call (NO localhost)
+      const res = await api.post("/api/auth/login", {
+        email,
+        password,
       });
 
-      const data = await res.json();
+      const data = res.data;
 
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+      // ✅ Store properly
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-        if (data.user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/");
-        }
+      // ✅ Redirect
+      if (data.user.role === "admin") {
+        navigate("/admin");
       } else {
-        alert(data.message || "Login failed ❌");
+        navigate("/");
       }
-    } catch {
-      alert("Server error ❌");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error.response?.data?.message || "Login failed ❌"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,9 +65,10 @@ export default function Login() {
 
         <button
           onClick={handleLogin}
+          disabled={loading}
           className="w-full bg-blue-600 text-white py-2 rounded-lg"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         {/* Admin Quick Login */}

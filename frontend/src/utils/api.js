@@ -1,7 +1,11 @@
 import axios from "axios";
 
+// ✅ LIVE BACKEND URL
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://smart-booking-01hy.onrender.com/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // ================= AUTH =================
@@ -15,8 +19,8 @@ export const loginUser = (data) =>
 export const createBooking = (data) =>
   API.post("/bookings", data);
 
-export const getUserBookings = (email) =>
-  API.get(`/bookings/user/${email}`);
+export const getUserBookings = (userId) =>
+  API.get(`/bookings/user/${userId}`);
 
 export const getAllBookings = () =>
   API.get("/bookings");
@@ -34,5 +38,5 @@ export const deleteBooking = (id) =>
 export const getAllUsers = () =>
   API.get("/admin/users");
 
-export const deleteUser = (email) =>
-  API.delete(`/admin/users/${email}`);
+export const deleteUser = (id) =>
+  API.delete(`/admin/users/${id}`);

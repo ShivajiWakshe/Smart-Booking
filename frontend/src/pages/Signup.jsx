@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { registerUser } from "../utils/api"; // ✅ use api
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
     if (password !== confirmPassword) {
@@ -16,24 +18,20 @@ export default function Signup() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+      setLoading(true);
 
-      const data = await res.json();
+      // ✅ API call (NO localhost)
+      const res = await registerUser({ name, email, password });
 
-      if (res.ok) {
+      if (res.status === 200 || res.status === 201) {
         alert("Account created successfully ✅");
         navigate("/login");
-      } else {
-        alert(data.message || "Signup failed ❌");
       }
-    } catch {
-      alert("Server error ❌");
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Signup failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,9 +74,10 @@ export default function Signup() {
 
         <button
           onClick={handleSignup}
+          disabled={loading}
           className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
         >
-          Signup
+          {loading ? "Creating..." : "Signup"}
         </button>
 
         <p className="text-center mt-4 text-sm">
