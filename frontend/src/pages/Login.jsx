@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../api"; // ✅ import api
+import { loginUser } from "../utils/api"; // ✅ correct path
 
 export default function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,19 +13,15 @@ export default function Login() {
     try {
       setLoading(true);
 
-      // ✅ API call (NO localhost)
-      const res = await api.post("/api/auth/login", {
-        email,
-        password,
-      });
+      const res = await loginUser({ email, password });
 
       const data = res.data;
 
-      // ✅ Store properly
-      localStorage.setItem("token", data.token);
+      // ✅ Store user + token
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
 
-      // ✅ Redirect
+      // ✅ Redirect based on role
       if (data.user.role === "admin") {
         navigate("/admin");
       } else {
@@ -32,10 +29,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error(error);
-
-      alert(
-        error.response?.data?.message || "Login failed ❌"
-      );
+      alert(error.response?.data?.message || "Login failed ❌");
     } finally {
       setLoading(false);
     }

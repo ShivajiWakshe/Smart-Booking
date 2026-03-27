@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// ✅ LIVE BACKEND URL (Render)
+// ✅ LIVE BACKEND (Render)
 const API = axios.create({
   baseURL: "https://smart-booking-01hy.onrender.com/api",
   headers: {
@@ -8,7 +8,7 @@ const API = axios.create({
   },
 });
 
-// ✅ Attach token automatically (if exists)
+// ✅ Attach token automatically
 API.interceptors.request.use(
   (config) => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -48,7 +48,7 @@ export const rejectBooking = (id) =>
 export const deleteBooking = (id) =>
   API.delete(`/bookings/${id}`);
 
-// ================= USERS (ADMIN) =================
+// ================= USERS =================
 export const getAllUsers = () =>
   API.get("/admin/users");
 
