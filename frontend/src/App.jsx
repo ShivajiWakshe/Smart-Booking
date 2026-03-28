@@ -1,37 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-// Pages
-import Dashboard from "./pages/Dashboard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";       // This is your services/landing page
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import AdminDashboard from "./pages/AdminDashboard";
-import Booking from "./pages/Booking";
-import MyBookings from "./pages/MyBookings";
-import Profile from "./pages/Profile";
-import About from "./pages/About";
+import Dashboard from "./pages/Dashboard"; // For logged-in users
+import Admin from "./pages/Admin";         // Admin panel
 
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-
-        {/* 🏠 MAIN */}
-        <Route path="/" element={<Dashboard />} />
-
-        {/* 🔐 AUTH (KEEP SAME) */}
+        {/* Public Pages */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/admin" element={<AdminDashboard />} />
 
-        {/* 📦 BOOKING */}
-        <Route path="/booking/:type" element={<Booking />} />
-
-        {/* 📖 USER FEATURES */}
-        <Route path="/bookings" element={<MyBookings />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/about" element={<About />} />
-
+        {/* Protected Pages */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
+
+export default App;
