@@ -1,58 +1,21 @@
 import axios from "axios";
 
-// ✅ LIVE BACKEND (Render)
 const API = axios.create({
-  baseURL: "https://smart-booking-01hy.onrender.com/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: "https://smart-booking-01hy.onrender.com/api", // live backend
 });
 
-// ✅ Attach token automatically
-API.interceptors.request.use(
-  (config) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (user?.token) {
-      config.headers.Authorization = `Bearer ${user.token}`;
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 // ================= AUTH =================
-export const registerUser = (data) =>
-  API.post("/auth/register", data);
-
-export const loginUser = (data) =>
-  API.post("/auth/login", data);
+export const registerUser = (data) => API.post("/auth/register", data);
+export const loginUser = (data) => API.post("/auth/login", data);
 
 // ================= BOOKINGS =================
-export const createBooking = (data) =>
-  API.post("/bookings", data);
+export const createBooking = (data) => API.post("/bookings", data);
+export const getUserBookings = (email) => API.get(`/bookings/user/${email}`);
+export const getAllBookings = () => API.get("/bookings");
+export const approveBooking = (id) => API.put(`/bookings/approve/${id}`);
+export const rejectBooking = (id) => API.put(`/bookings/reject/${id}`);
+export const deleteBooking = (id) => API.delete(`/bookings/${id}`);
 
-export const getUserBookings = (userId) =>
-  API.get(`/bookings/user/${userId}`);
-
-export const getAllBookings = () =>
-  API.get("/bookings");
-
-export const approveBooking = (id) =>
-  API.put(`/bookings/approve/${id}`);
-
-export const rejectBooking = (id) =>
-  API.put(`/bookings/reject/${id}`);
-
-export const deleteBooking = (id) =>
-  API.delete(`/bookings/${id}`);
-
-// ================= USERS =================
-export const getAllUsers = () =>
-  API.get("/admin/users");
-
-export const deleteUser = (id) =>
-  API.delete(`/admin/users/${id}`);
-
-export default API;
+// ================= USERS (ADMIN) =================
+export const getAllUsers = () => API.get("/admin/users");
+export const deleteUser = (email) => API.delete(`/admin/users/${email}`);
