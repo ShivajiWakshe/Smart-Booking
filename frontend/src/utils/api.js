@@ -1,7 +1,8 @@
 import axios from "axios";
 
+// ✅ Live backend
 const API = axios.create({
-  baseURL: "https://smart-booking-01hy.onrender.com/api", // live backend
+  baseURL: "https://smart-booking-01hy.onrender.com/api",
 });
 
 // ================= AUTH =================
