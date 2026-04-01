@@ -1,22 +1,35 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";       // This is your services/landing page
+
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard"; // For logged-in users
-import Admin from "./pages/Admin";         // Admin panel
+import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/Admin";
 
 function App() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <Router>
       <Routes>
-        {/* Public Pages */}
-        <Route path="/" element={<Home />} />
+
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* Protected Pages */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/admin" element={<Admin />} />
+        {/* User Dashboard */}
+        <Route
+          path="/"
+          element={user ? <Dashboard /> : <Login />}
+        />
+
+        {/* Protected Admin Route */}
+        <Route
+          path="/admin"
+          element={
+            user?.role === "admin" ? <Admin /> : <Login />
+          }
+        />
+
       </Routes>
     </Router>
   );

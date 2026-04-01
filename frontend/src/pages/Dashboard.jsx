@@ -4,16 +4,29 @@ import { getUserBookings } from "../utils/api";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
 
+  const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [bookings, setBookings] = useState([]);
 
-  // ✅ FETCH BOOKINGS FROM DB
+  // ✅ LOAD USER SAFELY
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!storedUser) {
+      navigate("/login"); // 🔒 protect route
+    } else {
+      setUser(storedUser);
+    }
+  }, []);
+
+  // ✅ FETCH BOOKINGS
+  useEffect(() => {
+    if (!user?.email) return;
+
     const fetchBookings = async () => {
       try {
-        const res = await getUserBookings(user?.email);
+        const res = await getUserBookings(user.email);
         setBookings(res.data);
       } catch (err) {
         console.error(err);
@@ -21,16 +34,16 @@ export default function Dashboard() {
     };
 
     fetchBookings();
-  }, []);
+  }, [user]);
 
-  // 📅 UPCOMING LOGIC
+  // 📅 UPCOMING BOOKINGS
   const today = new Date().toISOString().split("T")[0];
 
   const upcoming = bookings.filter(
     (b) => b.date && b.date >= today
   );
 
-  // 🔥 12 SERVICES
+  // 🔥 SERVICES
   const services = [
     { name: "Doctor Appointment", type: "doctor", icon: "🩺", desc: "Book doctor visits" },
     { name: "Lab Tests", type: "lab", icon: "🧪", desc: "Schedule lab tests" },
@@ -60,9 +73,9 @@ export default function Dashboard() {
           Welcome {user?.name} 👋
         </h1>
 
-        {/* ✨ BORDER REVEAL BUTTONS */}
-        <div className="flex gap-4 text-sm">
+        <div className="flex gap-4 text-sm items-center">
 
+          {/* NAV LINKS */}
           {[
             { name: "Profile", path: "/profile" },
             { name: "My Bookings", path: "/bookings" },
@@ -78,6 +91,18 @@ export default function Dashboard() {
             </button>
           ))}
 
+          {/* 🔥 ADMIN BUTTON (ONLY FOR ADMIN) */}
+          {user?.role === "admin" && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="relative px-3 py-1 text-red-600 font-semibold group"
+            >
+              Admin Panel
+              <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-red-500 transition-all group-hover:w-full"></span>
+            </button>
+          )}
+
+          {/* LOGOUT */}
           <button
             onClick={() => {
               localStorage.clear();
@@ -137,7 +162,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* 🚀 SERVICES GRID */}
+        {/* 🚀 SERVICES */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
           {filtered.map((service, index) => (
@@ -169,7 +194,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 🔥 FOOTER (CLEAN REAL WEBSITE STYLE) */}
+      {/* FOOTER */}
       <div className="bg-white border-t text-center py-3 text-sm text-gray-500">
         © 2026 Smart Booking System • Built by Shivaji Wakshe 🚀
       </div>
