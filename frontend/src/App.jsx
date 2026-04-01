@@ -1,37 +1,41 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Booking from "./pages/Booking";
+import MyBookings from "./pages/MyBookings";
 import Admin from "./pages/Admin";
+import About from "./pages/About";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
-
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
+        {/* AUTH */}
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* User Dashboard */}
-        <Route
-          path="/"
-          element={user ? <Dashboard /> : <Login />}
-        />
+        {/* USER */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/booking/:type" element={<Booking />} />
+        <Route path="/bookings" element={<MyBookings />} />
+        <Route path="/about" element={<About />} />
 
-        {/* Protected Admin Route */}
+        {/* ADMIN */}
         <Route
           path="/admin"
           element={
-            user?.role === "admin" ? <Admin /> : <Login />
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
           }
         />
 
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

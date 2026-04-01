@@ -5,23 +5,25 @@ const API = axios.create({
 });
 
 // AUTH
-export const registerUser = (data) => API.post("/auth/register", data);
 export const loginUser = (data) => API.post("/auth/login", data);
+export const signupUser = (data) => API.post("/auth/signup", data);
 
 // BOOKINGS
-export const createBooking = (data) => API.post("/bookings", data);
+export const createBooking = (data) => API.post("/booking", data);
 export const getUserBookings = (email) =>
-  API.get(`/bookings/user/${email}`);
-
-export const getAllBookings = () => API.get("/bookings");
-export const approveBooking = (id) =>
-  API.put(`/bookings/approve/${id}`);
-export const rejectBooking = (id) =>
-  API.put(`/bookings/reject/${id}`);
+  API.get(`/booking/user?email=${email}`);
 export const deleteBooking = (id) =>
-  API.delete(`/bookings/${id}`);
+  API.delete(`/booking/${id}`);
 
-// USERS (ADMIN)
+// ADMIN
+export const getAllBookings = () => API.get("/admin/bookings");
+export const approveBooking = (id) =>
+  API.put(`/admin/approve/${id}`);
+export const rejectBooking = (id) =>
+  API.put(`/admin/reject/${id}`);
+export const deleteBookingAdmin = (id) =>
+  API.delete(`/admin/${id}`);
+
 export const getAllUsers = () => API.get("/admin/users");
 export const deleteUser = (email) =>
-  API.delete(`/admin/users/${email}`);
+  API.delete(`/admin/user/${email}`);

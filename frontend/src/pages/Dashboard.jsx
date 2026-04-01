@@ -9,6 +9,12 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [bookings, setBookings] = useState([]);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+if (!user) {
+  navigate("/login");
+}
+
   // ✅ LOAD USER SAFELY
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));

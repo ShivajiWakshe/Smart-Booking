@@ -94,6 +94,17 @@ export default function Admin() {
         </ResponsiveContainer>
       </div>
 
+
+
+
+      import { toast } from "react-toastify";
+
+const handleApprove = async (id) => {
+  await approveBooking(id);
+  toast.success("Approved ✅");
+  fetchData();
+};
+
       {/* BOOKINGS */}
       <div className="bg-white p-4 rounded-xl shadow mb-6">
         {filtered.map((b) => (
